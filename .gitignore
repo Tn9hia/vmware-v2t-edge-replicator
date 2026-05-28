@@ -1,5 +1,6 @@
 # Credentials - NEVER commit
 passfile
+passfile-prod
 
 # Build artifacts
 v2t-replicate-edge
@@ -14,3 +15,6 @@ v2t-replicate-edge
 .idea/
 .vscode/
 *.swp
+*.xml
+*.txt
+*.md

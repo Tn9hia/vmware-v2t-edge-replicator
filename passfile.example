@@ -2,7 +2,7 @@
 # Passfile format for v2t-replicate-edge tool
 # Lines starting with # are comments
 
-host=https://hht-lab-vcd-01.cloud.lab
-username=nghialt
+host=https://abc.com
+username=user01
 password=abc123!@#
-org=System
+org=system
