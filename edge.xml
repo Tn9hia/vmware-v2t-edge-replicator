@@ -1,0 +1,477 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<EdgeGateway xmlns="http://www.vmware.com/vcloud/v1.5" xmlns:vmext="http://www.vmware.com/vcloud/extension/v1.5" xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1" xmlns:vssd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_VirtualSystemSettingData" xmlns:common="http://schemas.dmtf.org/wbem/wscim/1/common" xmlns:rasd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData" xmlns:vmw="http://www.vmware.com/schema/ovf" xmlns:ovfenv="http://schemas.dmtf.org/ovf/environment/1" xmlns:ns9="http://www.vmware.com/vcloud/versions" status="1" name="Edge-ATM-6600831-01" id="urn:vcloud:gateway:011430c1-e8f7-467e-a210-43be1c3922f2" href="https://cloud2.viettelidc.com.vn/api/admin/edgeGateway/011430c1-e8f7-467e-a210-43be1c3922f2" type="application/vnd.vmware.admin.edgeGateway+xml">
+    <VCloudExtension required="false">
+        <vmext:VimObjectRef>
+            <vmext:VimServerRef href="https://cloud2.viettelidc.com.vn/api/admin/extension/vimServer/91385079-7d57-4153-84f5-ec544de6fda8" id="urn:vcloud:vimserver:91385079-7d57-4153-84f5-ec544de6fda8" type="application/vnd.vmware.admin.vmwvirtualcenter+xml"/>
+            <vmext:MoRef>datastore-282889</vmext:MoRef>
+            <vmext:VimObjectType>DATASTORE</vmext:VimObjectType>
+        </vmext:VimObjectRef>
+    </VCloudExtension>
+    <Link rel="edit" href="https://cloud2.viettelidc.com.vn/api/admin/edgeGateway/011430c1-e8f7-467e-a210-43be1c3922f2" type="application/vnd.vmware.admin.edgeGateway+xml"/>
+    <Link rel="edit" href="https://cloud2.viettelidc.com.vn/api/admin/edgeGateway/011430c1-e8f7-467e-a210-43be1c3922f2" type="application/vnd.vmware.admin.edgeGateway+json"/>
+    <Link rel="remove" href="https://cloud2.viettelidc.com.vn/api/admin/edgeGateway/011430c1-e8f7-467e-a210-43be1c3922f2"/>
+    <Link rel="up" href="https://cloud2.viettelidc.com.vn/api/admin/vdc/721632ff-f5df-4f70-ac0c-d813d72918c7" type="application/vnd.vmware.admin.vdc+xml"/>
+    <Link rel="up" href="https://cloud2.viettelidc.com.vn/api/admin/vdc/721632ff-f5df-4f70-ac0c-d813d72918c7" type="application/vnd.vmware.admin.vdc+json"/>
+    <Link rel="edgeGateway:redeploy" href="https://cloud2.viettelidc.com.vn/api/admin/edgeGateway/011430c1-e8f7-467e-a210-43be1c3922f2/action/redeploy"/>
+    <Link rel="edgeGateway:configureServices" href="https://cloud2.viettelidc.com.vn/api/admin/edgeGateway/011430c1-e8f7-467e-a210-43be1c3922f2/action/configureServices" type="application/vnd.vmware.admin.edgeGatewayServiceConfiguration+xml"/>
+    <Link rel="edgeGateway:configureServices" href="https://cloud2.viettelidc.com.vn/api/admin/edgeGateway/011430c1-e8f7-467e-a210-43be1c3922f2/action/configureServices" type="application/vnd.vmware.admin.edgeGatewayServiceConfiguration+json"/>
+    <Link rel="edgeGateway:enableDistributedRouting" href="https://cloud2.viettelidc.com.vn/api/admin/edgeGateway/011430c1-e8f7-467e-a210-43be1c3922f2/action/enableDistributedRouting"/>
+    <Link rel="edgeGateway:updateProperties" href="https://cloud2.viettelidc.com.vn/api/admin/edgeGateway/011430c1-e8f7-467e-a210-43be1c3922f2/action/updateProperties" type="application/vnd.vmware.admin.edgeGateway+xml"/>
+    <Link rel="edgeGateway:updateProperties" href="https://cloud2.viettelidc.com.vn/api/admin/edgeGateway/011430c1-e8f7-467e-a210-43be1c3922f2/action/updateProperties" type="application/vnd.vmware.admin.edgeGateway+json"/>
+    <Link rel="edgeGateway:configureSyslogServerSettings" href="https://cloud2.viettelidc.com.vn/api/admin/edgeGateway/011430c1-e8f7-467e-a210-43be1c3922f2/action/configureSyslogServerSettings" type="application/vnd.vmware.vcloud.SyslogSettings+xml"/>
+    <Link rel="edgeGateway:configureSyslogServerSettings" href="https://cloud2.viettelidc.com.vn/api/admin/edgeGateway/011430c1-e8f7-467e-a210-43be1c3922f2/action/configureSyslogServerSettings" type="application/vnd.vmware.vcloud.SyslogSettings+json"/>
+    <Link rel="edgeGateway:syncSyslogSettings" href="https://cloud2.viettelidc.com.vn/api/admin/edgeGateway/011430c1-e8f7-467e-a210-43be1c3922f2/action/syncSyslogServerSettings"/>
+    <Link rel="edgeGateway:modifyFormFactor" href="https://cloud2.viettelidc.com.vn/api/admin/edgeGateway/011430c1-e8f7-467e-a210-43be1c3922f2/action/modifyFormFactor" type="application/vnd.vmware.vcloud.edgeGatewayFormFactor+xml"/>
+    <Link rel="edgeGateway:modifyFormFactor" href="https://cloud2.viettelidc.com.vn/api/admin/edgeGateway/011430c1-e8f7-467e-a210-43be1c3922f2/action/modifyFormFactor" type="application/vnd.vmware.vcloud.edgeGatewayFormFactor+json"/>
+    <Link rel="down" href="https://cloud2.viettelidc.com.vn/api/admin/edgeGateway/011430c1-e8f7-467e-a210-43be1c3922f2/metadata" type="application/vnd.vmware.vcloud.metadata+xml"/>
+    <Link rel="down" href="https://cloud2.viettelidc.com.vn/api/admin/edgeGateway/011430c1-e8f7-467e-a210-43be1c3922f2/metadata" type="application/vnd.vmware.vcloud.metadata+json"/>
+    <GatewayBackingRef>
+        <gatewayId>edge-1596</gatewayId>
+        <VCRef id="91385079-7d57-4153-84f5-ec544de6fda8" type="com.vmware.vcloud.entity.vimserver" name=""/>
+    </GatewayBackingRef>
+    <EdgeGatewayType>NSXV_BACKED</EdgeGatewayType>
+    <Configuration>
+        <GatewayBackingConfig>full</GatewayBackingConfig>
+        <GatewayInterfaces>
+            <GatewayInterface>
+                <Name>750-VPS External Network</Name>
+                <DisplayName>750-VPS External Network</DisplayName>
+                <Network href="https://cloud2.viettelidc.com.vn/api/admin/network/36dc7068-77ac-4298-8f2f-f1728a4d355b" id="urn:vcloud:network:36dc7068-77ac-4298-8f2f-f1728a4d355b" type="application/vnd.vmware.admin.network+xml" name="750-VPS External Network"/>
+                <InterfaceType>uplink</InterfaceType>
+                <SubnetParticipation>
+                    <Gateway>27.71.232.254</Gateway>
+                    <Netmask>255.255.255.0</Netmask>
+                    <SubnetPrefixLength>24</SubnetPrefixLength>
+                    <IpAddress>27.71.232.153</IpAddress>
+                    <IpRanges>
+                        <IpRange>
+                            <StartAddress>27.71.232.249</StartAddress>
+                            <EndAddress>27.71.232.249</EndAddress>
+                        </IpRange>
+                    </IpRanges>
+                    <UseForDefaultRoute>false</UseForDefaultRoute>
+                    <TotalIpCount>2</TotalIpCount>
+                </SubnetParticipation>
+                <ApplyRateLimit>false</ApplyRateLimit>
+                <UseForDefaultRoute>false</UseForDefaultRoute>
+                <Connected>true</Connected>
+                <NetworkBackingType>DV_PORTGROUP</NetworkBackingType>
+            </GatewayInterface>
+            <GatewayInterface>
+                <Name>ATM-6600831-LAN</Name>
+                <DisplayName>ATM-6600831-LAN</DisplayName>
+                <Network href="https://cloud2.viettelidc.com.vn/api/admin/network/019adf7a-e3d0-41f3-ae1d-b4b4218a99c5" id="urn:vcloud:network:019adf7a-e3d0-41f3-ae1d-b4b4218a99c5" type="application/vnd.vmware.admin.network+xml" name="ATM-6600831-LAN"/>
+                <InterfaceType>internal</InterfaceType>
+                <SubnetParticipation>
+                    <Gateway>192.168.31.254</Gateway>
+                    <Netmask>255.255.255.0</Netmask>
+                    <SubnetPrefixLength>24</SubnetPrefixLength>
+                    <IpAddress>192.168.31.254</IpAddress>
+                    <UseForDefaultRoute>false</UseForDefaultRoute>
+                    <TotalIpCount>0</TotalIpCount>
+                </SubnetParticipation>
+                <ApplyRateLimit>false</ApplyRateLimit>
+                <UseForDefaultRoute>false</UseForDefaultRoute>
+                <Connected>true</Connected>
+                <NetworkBackingType>VIRTUAL_WIRE</NetworkBackingType>
+            </GatewayInterface>
+            <GatewayInterface>
+                <Name>757-Cloud External Network</Name>
+                <DisplayName>757-Cloud External Network</DisplayName>
+                <Network href="https://cloud2.viettelidc.com.vn/api/admin/network/fb7710de-89d0-4bc6-9980-a959b214b5dd" id="urn:vcloud:network:fb7710de-89d0-4bc6-9980-a959b214b5dd" type="application/vnd.vmware.admin.network+xml" name="757-Cloud External Network"/>
+                <InterfaceType>uplink</InterfaceType>
+                <SubnetParticipation>
+                    <Gateway>171.244.137.254</Gateway>
+                    <Netmask>255.255.255.0</Netmask>
+                    <SubnetPrefixLength>24</SubnetPrefixLength>
+                    <IpAddress>171.244.137.49</IpAddress>
+                    <IpRanges>
+                        <IpRange>
+                            <StartAddress>171.244.137.43</StartAddress>
+                            <EndAddress>171.244.137.47</EndAddress>
+                        </IpRange>
+                    </IpRanges>
+                    <UseForDefaultRoute>true</UseForDefaultRoute>
+                    <TotalIpCount>6</TotalIpCount>
+                </SubnetParticipation>
+                <ApplyRateLimit>false</ApplyRateLimit>
+                <UseForDefaultRoute>true</UseForDefaultRoute>
+                <Connected>true</Connected>
+                <NetworkBackingType>DV_PORTGROUP</NetworkBackingType>
+            </GatewayInterface>
+        </GatewayInterfaces>
+        <EdgeGatewayServiceConfiguration>
+            <GatewayDhcpService>
+                <IsEnabled>false</IsEnabled>
+            </GatewayDhcpService>
+            <FirewallService>
+                <IsEnabled>true</IsEnabled>
+                <DefaultAction>drop</DefaultAction>
+                <LogDefaultAction>false</LogDefaultAction>
+                <FirewallRule>
+                    <Id>131079</Id>
+                    <IsEnabled>true</IsEnabled>
+                    <Policy>allow</Policy>
+                    <Protocols>
+                        <Any>true</Any>
+                    </Protocols>
+                    <DestinationPortRange>Any</DestinationPortRange>
+                    <DestinationIp>123.30.142.0/27</DestinationIp>
+                    <SourcePortRange>Any</SourcePortRange>
+                    <SourceIp>192.168.31.0/24</SourceIp>
+                    <EnableLogging>false</EnableLogging>
+                </FirewallRule>
+                <FirewallRule>
+                    <Id>131086</Id>
+                    <IsEnabled>true</IsEnabled>
+                    <Policy>allow</Policy>
+                    <Protocols>
+                        <Any>true</Any>
+                    </Protocols>
+                    <DestinationPortRange>Any</DestinationPortRange>
+                    <DestinationIp>Any</DestinationIp>
+                    <SourcePortRange>Any</SourcePortRange>
+                    <SourceIp>192.168.31.0/24</SourceIp>
+                    <EnableLogging>false</EnableLogging>
+                </FirewallRule>
+                <FirewallRule>
+                    <Id>131085</Id>
+                    <IsEnabled>true</IsEnabled>
+                    <Policy>allow</Policy>
+                    <Protocols>
+                        <Any>true</Any>
+                    </Protocols>
+                    <DestinationPortRange>Any</DestinationPortRange>
+                    <DestinationIp>192.168.31.0/24</DestinationIp>
+                    <SourcePortRange>Any</SourcePortRange>
+                    <SourceIp>192.168.0.0/16</SourceIp>
+                    <EnableLogging>false</EnableLogging>
+                </FirewallRule>
+                <FirewallRule>
+                    <Id>131090</Id>
+                    <IsEnabled>true</IsEnabled>
+                    <Policy>allow</Policy>
+                    <Protocols>
+                        <Any>true</Any>
+                    </Protocols>
+                    <DestinationPortRange>Any</DestinationPortRange>
+                    <DestinationIp>Any</DestinationIp>
+                    <SourcePortRange>Any</SourcePortRange>
+                    <SourceIp>103.242.100.0/23</SourceIp>
+                    <EnableLogging>false</EnableLogging>
+                </FirewallRule>
+                <FirewallRule>
+                    <Id>131089</Id>
+                    <IsEnabled>true</IsEnabled>
+                    <Policy>allow</Policy>
+                    <Protocols>
+                        <Icmp>true</Icmp>
+                    </Protocols>
+                    <IcmpSubType>any</IcmpSubType>
+                    <DestinationPortRange>Any</DestinationPortRange>
+                    <DestinationIp>Any</DestinationIp>
+                    <SourcePortRange>Any</SourcePortRange>
+                    <SourceIp>Any</SourceIp>
+                    <EnableLogging>true</EnableLogging>
+                </FirewallRule>
+            </FirewallService>
+            <NatService>
+                <IsEnabled>true</IsEnabled>
+                <NatRule>
+                    <Description>Allow ping</Description>
+                    <RuleType>SNAT</RuleType>
+                    <IsEnabled>true</IsEnabled>
+                    <Id>196622</Id>
+                    <GatewayNatRule>
+                        <Interface href="https://cloud2.viettelidc.com.vn/api/admin/network/fb7710de-89d0-4bc6-9980-a959b214b5dd" type="application/vnd.vmware.admin.network+xml" name="757-Cloud External Network"/>
+                        <OriginalIp>192.168.31.0/24</OriginalIp>
+                        <TranslatedIp>171.244.137.45</TranslatedIp>
+                    </GatewayNatRule>
+                </NatRule>
+                <NatRule>
+                    <Description>allow-NTP</Description>
+                    <RuleType>SNAT</RuleType>
+                    <IsEnabled>true</IsEnabled>
+                    <Id>196620</Id>
+                    <GatewayNatRule>
+                        <Interface href="https://cloud2.viettelidc.com.vn/api/admin/network/fb7710de-89d0-4bc6-9980-a959b214b5dd" type="application/vnd.vmware.admin.network+xml" name="757-Cloud External Network"/>
+                        <OriginalIp>192.168.31.0/24</OriginalIp>
+                        <TranslatedIp>171.244.137.45</TranslatedIp>
+                    </GatewayNatRule>
+                </NatRule>
+                <NatRule>
+                    <Description>allow-DNS</Description>
+                    <RuleType>SNAT</RuleType>
+                    <IsEnabled>true</IsEnabled>
+                    <Id>196619</Id>
+                    <GatewayNatRule>
+                        <Interface href="https://cloud2.viettelidc.com.vn/api/admin/network/fb7710de-89d0-4bc6-9980-a959b214b5dd" type="application/vnd.vmware.admin.network+xml" name="757-Cloud External Network"/>
+                        <OriginalIp>192.168.31.0/24</OriginalIp>
+                        <TranslatedIp>171.244.137.45</TranslatedIp>
+                    </GatewayNatRule>
+                </NatRule>
+                <NatRule>
+                    <Description>31.18.cub-pbx1 rule OUTBOUND</Description>
+                    <RuleType>SNAT</RuleType>
+                    <IsEnabled>true</IsEnabled>
+                    <Id>196609</Id>
+                    <GatewayNatRule>
+                        <Interface href="https://cloud2.viettelidc.com.vn/api/admin/network/fb7710de-89d0-4bc6-9980-a959b214b5dd" type="application/vnd.vmware.admin.network+xml" name="757-Cloud External Network"/>
+                        <OriginalIp>192.168.31.18</OriginalIp>
+                        <TranslatedIp>171.244.137.43</TranslatedIp>
+                    </GatewayNatRule>
+                </NatRule>
+                <NatRule>
+                    <Description>31.18.cub-pbx1 rule INBOUND</Description>
+                    <RuleType>DNAT</RuleType>
+                    <IsEnabled>true</IsEnabled>
+                    <Id>196610</Id>
+                    <GatewayNatRule>
+                        <Interface href="https://cloud2.viettelidc.com.vn/api/admin/network/fb7710de-89d0-4bc6-9980-a959b214b5dd" type="application/vnd.vmware.admin.network+xml" name="757-Cloud External Network"/>
+                        <OriginalIp>171.244.137.43</OriginalIp>
+                        <OriginalPort>any</OriginalPort>
+                        <TranslatedIp>192.168.31.18</TranslatedIp>
+                        <TranslatedPort>any</TranslatedPort>
+                        <Protocol>any</Protocol>
+                    </GatewayNatRule>
+                </NatRule>
+                <NatRule>
+                    <Description>PBX1- trust IP ST</Description>
+                    <RuleType>DNAT</RuleType>
+                    <IsEnabled>true</IsEnabled>
+                    <Id>196629</Id>
+                    <GatewayNatRule>
+                        <Interface href="https://cloud2.viettelidc.com.vn/api/admin/network/fb7710de-89d0-4bc6-9980-a959b214b5dd" type="application/vnd.vmware.admin.network+xml" name="757-Cloud External Network"/>
+                        <OriginalIp>171.244.137.43</OriginalIp>
+                        <OriginalPort>any</OriginalPort>
+                        <TranslatedIp>192.168.31.18</TranslatedIp>
+                        <TranslatedPort>any</TranslatedPort>
+                        <Protocol>any</Protocol>
+                    </GatewayNatRule>
+                </NatRule>
+                <NatRule>
+                    <Description>31.19.cub-pbx2</Description>
+                    <RuleType>SNAT</RuleType>
+                    <IsEnabled>true</IsEnabled>
+                    <Id>196611</Id>
+                    <GatewayNatRule>
+                        <Interface href="https://cloud2.viettelidc.com.vn/api/admin/network/fb7710de-89d0-4bc6-9980-a959b214b5dd" type="application/vnd.vmware.admin.network+xml" name="757-Cloud External Network"/>
+                        <OriginalIp>192.168.31.19</OriginalIp>
+                        <TranslatedIp>171.244.137.44</TranslatedIp>
+                    </GatewayNatRule>
+                </NatRule>
+                <NatRule>
+                    <Description>31.19.cub-pbx2</Description>
+                    <RuleType>DNAT</RuleType>
+                    <IsEnabled>true</IsEnabled>
+                    <Id>196612</Id>
+                    <GatewayNatRule>
+                        <Interface href="https://cloud2.viettelidc.com.vn/api/admin/network/fb7710de-89d0-4bc6-9980-a959b214b5dd" type="application/vnd.vmware.admin.network+xml" name="757-Cloud External Network"/>
+                        <OriginalIp>171.244.137.44</OriginalIp>
+                        <OriginalPort>22</OriginalPort>
+                        <TranslatedIp>192.168.31.19</TranslatedIp>
+                        <TranslatedPort>any</TranslatedPort>
+                        <Protocol>tcp</Protocol>
+                    </GatewayNatRule>
+                </NatRule>
+                <NatRule>
+                    <Description>31.21.cub-4x1</Description>
+                    <RuleType>DNAT</RuleType>
+                    <IsEnabled>true</IsEnabled>
+                    <Id>196614</Id>
+                    <GatewayNatRule>
+                        <Interface href="https://cloud2.viettelidc.com.vn/api/admin/network/fb7710de-89d0-4bc6-9980-a959b214b5dd" type="application/vnd.vmware.admin.network+xml" name="757-Cloud External Network"/>
+                        <OriginalIp>171.244.137.45</OriginalIp>
+                        <OriginalPort>any</OriginalPort>
+                        <TranslatedIp>192.168.31.21</TranslatedIp>
+                        <TranslatedPort>any</TranslatedPort>
+                        <Protocol>any</Protocol>
+                    </GatewayNatRule>
+                </NatRule>
+                <NatRule>
+                    <Description>31.22.cub-4x2</Description>
+                    <RuleType>DNAT</RuleType>
+                    <IsEnabled>true</IsEnabled>
+                    <Id>196616</Id>
+                    <GatewayNatRule>
+                        <Interface href="https://cloud2.viettelidc.com.vn/api/admin/network/fb7710de-89d0-4bc6-9980-a959b214b5dd" type="application/vnd.vmware.admin.network+xml" name="757-Cloud External Network"/>
+                        <OriginalIp>171.244.137.46</OriginalIp>
+                        <OriginalPort>22</OriginalPort>
+                        <TranslatedIp>192.168.31.22</TranslatedIp>
+                        <TranslatedPort>any</TranslatedPort>
+                        <Protocol>tcp</Protocol>
+                    </GatewayNatRule>
+                </NatRule>
+                <NatRule>
+                    <Description>31.23.cub-4x3</Description>
+                    <RuleType>DNAT</RuleType>
+                    <IsEnabled>true</IsEnabled>
+                    <Id>196618</Id>
+                    <GatewayNatRule>
+                        <Interface href="https://cloud2.viettelidc.com.vn/api/admin/network/fb7710de-89d0-4bc6-9980-a959b214b5dd" type="application/vnd.vmware.admin.network+xml" name="757-Cloud External Network"/>
+                        <OriginalIp>171.244.137.47</OriginalIp>
+                        <OriginalPort>22</OriginalPort>
+                        <TranslatedIp>192.168.31.23</TranslatedIp>
+                        <TranslatedPort>any</TranslatedPort>
+                        <Protocol>tcp</Protocol>
+                    </GatewayNatRule>
+                </NatRule>
+                <NatRule>
+                    <Description>allow-All</Description>
+                    <RuleType>SNAT</RuleType>
+                    <IsEnabled>true</IsEnabled>
+                    <Id>196621</Id>
+                    <GatewayNatRule>
+                        <Interface href="https://cloud2.viettelidc.com.vn/api/admin/network/fb7710de-89d0-4bc6-9980-a959b214b5dd" type="application/vnd.vmware.admin.network+xml" name="757-Cloud External Network"/>
+                        <OriginalIp>192.168.31.0/24</OriginalIp>
+                        <TranslatedIp>171.244.137.45</TranslatedIp>
+                    </GatewayNatRule>
+                </NatRule>
+            </NatService>
+            <GatewayIpsecVpnService>
+                <IsEnabled>true</IsEnabled>
+                <Tunnel>
+                    <Name>ToIDCTT</Name>
+                    <IpsecVpnThirdPartyPeer>
+                        <PeerId>123.30.142.28</PeerId>
+                    </IpsecVpnThirdPartyPeer>
+                    <PeerIpAddress>123.30.142.28</PeerIpAddress>
+                    <PeerId>123.30.142.28</PeerId>
+                    <LocalIpAddress>171.244.137.49</LocalIpAddress>
+                    <LocalId>171.244.137.49</LocalId>
+                    <LocalSubnet>
+                        <Name>0.0.0.0/0</Name>
+                        <Gateway>0.0.0.0</Gateway>
+                        <Netmask>0</Netmask>
+                    </LocalSubnet>
+                    <PeerSubnet>
+                        <Name>0.0.0.0/0</Name>
+                        <Gateway>0.0.0.0</Gateway>
+                        <Netmask>0</Netmask>
+                    </PeerSubnet>
+                    <SharedSecretEncrypted>false</SharedSecretEncrypted>
+                    <EncryptionProtocol>AES256</EncryptionProtocol>
+                    <Mtu>0</Mtu>
+                    <IsEnabled>true</IsEnabled>
+                    <IsOperational>false</IsOperational>
+                </Tunnel>
+                <Tunnel>
+                    <Name>ToHHT</Name>
+                    <IpsecVpnThirdPartyPeer>
+                        <PeerId>210.211.110.79</PeerId>
+                    </IpsecVpnThirdPartyPeer>
+                    <PeerIpAddress>210.211.110.79</PeerIpAddress>
+                    <PeerId>210.211.110.79</PeerId>
+                    <LocalIpAddress>171.244.137.49</LocalIpAddress>
+                    <LocalId>171.244.137.49</LocalId>
+                    <LocalSubnet>
+                        <Name>0.0.0.0/0</Name>
+                        <Gateway>0.0.0.0</Gateway>
+                        <Netmask>0</Netmask>
+                    </LocalSubnet>
+                    <PeerSubnet>
+                        <Name>0.0.0.0/0</Name>
+                        <Gateway>0.0.0.0</Gateway>
+                        <Netmask>0</Netmask>
+                    </PeerSubnet>
+                    <SharedSecretEncrypted>false</SharedSecretEncrypted>
+                    <EncryptionProtocol>AES256</EncryptionProtocol>
+                    <Mtu>0</Mtu>
+                    <IsEnabled>true</IsEnabled>
+                    <IsOperational>false</IsOperational>
+                </Tunnel>
+            </GatewayIpsecVpnService>
+            <StaticRoutingService>
+                <IsEnabled>true</IsEnabled>
+                <StaticRoute>
+                    <Name>CUB</Name>
+                    <Network>10.1.40.0/24</Network>
+                    <NextHopIp>172.16.102.130</NextHopIp>
+                    <Interface>External</Interface>
+                    <GatewayInterface href="https://cloud2.viettelidc.com.vn/api/admin/network/fb7710de-89d0-4bc6-9980-a959b214b5dd" type="application/vnd.vmware.admin.vmwexternalnet+xml" name="757-Cloud External Network"/>
+                </StaticRoute>
+                <StaticRoute>
+                    <Name>CUB</Name>
+                    <Network>10.1.72.0/24</Network>
+                    <NextHopIp>172.16.102.130</NextHopIp>
+                    <Interface>External</Interface>
+                    <GatewayInterface href="https://cloud2.viettelidc.com.vn/api/admin/network/fb7710de-89d0-4bc6-9980-a959b214b5dd" type="application/vnd.vmware.admin.vmwexternalnet+xml" name="757-Cloud External Network"/>
+                </StaticRoute>
+                <StaticRoute>
+                    <Name>CUB</Name>
+                    <Network>10.1.76.0/24</Network>
+                    <NextHopIp>172.16.102.130</NextHopIp>
+                    <Interface>External</Interface>
+                    <GatewayInterface href="https://cloud2.viettelidc.com.vn/api/admin/network/fb7710de-89d0-4bc6-9980-a959b214b5dd" type="application/vnd.vmware.admin.vmwexternalnet+xml" name="757-Cloud External Network"/>
+                </StaticRoute>
+                <StaticRoute>
+                    <Name>CUB</Name>
+                    <Network>10.211.182.32/32</Network>
+                    <NextHopIp>172.16.102.130</NextHopIp>
+                    <Interface>External</Interface>
+                    <GatewayInterface href="https://cloud2.viettelidc.com.vn/api/admin/network/fb7710de-89d0-4bc6-9980-a959b214b5dd" type="application/vnd.vmware.admin.vmwexternalnet+xml" name="757-Cloud External Network"/>
+                </StaticRoute>
+                <StaticRoute>
+                    <Name>CUB</Name>
+                    <Network>10.211.182.88/32</Network>
+                    <NextHopIp>172.16.102.130</NextHopIp>
+                    <Interface>External</Interface>
+                    <GatewayInterface href="https://cloud2.viettelidc.com.vn/api/admin/network/fb7710de-89d0-4bc6-9980-a959b214b5dd" type="application/vnd.vmware.admin.vmwexternalnet+xml" name="757-Cloud External Network"/>
+                </StaticRoute>
+                <StaticRoute>
+                    <Name>CUB</Name>
+                    <Network>10.211.182.130/32</Network>
+                    <NextHopIp>172.16.102.130</NextHopIp>
+                    <Interface>External</Interface>
+                    <GatewayInterface href="https://cloud2.viettelidc.com.vn/api/admin/network/fb7710de-89d0-4bc6-9980-a959b214b5dd" type="application/vnd.vmware.admin.vmwexternalnet+xml" name="757-Cloud External Network"/>
+                </StaticRoute>
+                <StaticRoute>
+                    <Name>staticRoute7</Name>
+                    <Network>172.16.251.0/24</Network>
+                    <NextHopIp>172.16.102.130</NextHopIp>
+                    <Interface>External</Interface>
+                    <GatewayInterface href="https://cloud2.viettelidc.com.vn/api/admin/network/fb7710de-89d0-4bc6-9980-a959b214b5dd" type="application/vnd.vmware.admin.vmwexternalnet+xml" name="757-Cloud External Network"/>
+                </StaticRoute>
+                <StaticRoute>
+                    <Name>staticRoute8</Name>
+                    <Network>172.16.251.204/30</Network>
+                    <NextHopIp>172.16.102.130</NextHopIp>
+                    <Interface>External</Interface>
+                    <GatewayInterface href="https://cloud2.viettelidc.com.vn/api/admin/network/fb7710de-89d0-4bc6-9980-a959b214b5dd" type="application/vnd.vmware.admin.vmwexternalnet+xml" name="757-Cloud External Network"/>
+                </StaticRoute>
+                <StaticRoute>
+                    <Name>TO VNPT1</Name>
+                    <Network>192.168.16.0/24</Network>
+                    <NextHopIp>172.16.102.138</NextHopIp>
+                    <Interface>External</Interface>
+                    <GatewayInterface href="https://cloud2.viettelidc.com.vn/api/admin/network/fb7710de-89d0-4bc6-9980-a959b214b5dd" type="application/vnd.vmware.admin.vmwexternalnet+xml" name="757-Cloud External Network"/>
+                </StaticRoute>
+                <StaticRoute>
+                    <Name>staticRoute10</Name>
+                    <Network>192.168.17.0/24</Network>
+                    <NextHopIp>172.16.102.130</NextHopIp>
+                    <Interface>External</Interface>
+                    <GatewayInterface href="https://cloud2.viettelidc.com.vn/api/admin/network/fb7710de-89d0-4bc6-9980-a959b214b5dd" type="application/vnd.vmware.admin.vmwexternalnet+xml" name="757-Cloud External Network"/>
+                </StaticRoute>
+                <StaticRoute>
+                    <Name>TO VLAN22 VNPT</Name>
+                    <Network>192.168.22.0/24</Network>
+                    <NextHopIp>172.16.102.138</NextHopIp>
+                    <Interface>External</Interface>
+                    <GatewayInterface href="https://cloud2.viettelidc.com.vn/api/admin/network/fb7710de-89d0-4bc6-9980-a959b214b5dd" type="application/vnd.vmware.admin.vmwexternalnet+xml" name="757-Cloud External Network"/>
+                </StaticRoute>
+            </StaticRoutingService>
+            <LoadBalancerService>
+                <IsEnabled>false</IsEnabled>
+            </LoadBalancerService>
+        </EdgeGatewayServiceConfiguration>
+        <HaEnabled>false</HaEnabled>
+        <UseDefaultRouteForDnsRelay>false</UseDefaultRouteForDnsRelay>
+        <SyslogServerSettings>
+            <TenantSyslogServerSettings/>
+        </SyslogServerSettings>
+        <AdvancedNetworkingEnabled>true</AdvancedNetworkingEnabled>
+        <DistributedRoutingEnabled>false</DistributedRoutingEnabled>
+        <FipsModeEnabled>false</FipsModeEnabled>
+    </Configuration>
+</EdgeGateway>

@@ -1,0 +1,16 @@
+# Credentials - NEVER commit
+passfile
+
+# Build artifacts
+v2t-replicate-edge
+/cmd/v2t-replicate-edge
+
+# Go
+*.exe
+*.test
+*.out
+
+# IDE
+.idea/
+.vscode/
+*.swp
