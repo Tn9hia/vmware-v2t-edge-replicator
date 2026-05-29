@@ -1,6 +1,7 @@
-# Credentials - NEVER commit
-passfile
-passfile-prod
+# Credentials & Test data - NEVER commit
+pass*
+!passfile.example
+cloudapi.json
 
 # Build artifacts
 v2t-replicate-edge
@@ -18,3 +19,5 @@ v2t-replicate-edge
 *.xml
 *.txt
 *.md
+!README.md
+!builds/
