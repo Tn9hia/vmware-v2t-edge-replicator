@@ -223,12 +223,19 @@ func (c *Client) FindOrCreateAppPortProfile(
 		return nil, nil
 	}
 
-	// ICMP → dùng ICMPv4-ALL pre-defined (ưu tiên trước khi check port)
+	// ICMP → tìm ICMPv4-ALL trong danh sách profiles (không hardcode URN vì khác nhau giữa các VCD env)
 	if proto == "icmp" {
-		return &AppPortProfile{
-			ID:   "urn:vcloud:applicationPortProfile:1cefb406-765e-56a6-bcb9-8762b9fe2495",
-			Name: "ICMPv4-ALL",
-		}, nil
+		for _, p := range profiles {
+			if strings.EqualFold(p.Name, "ICMPv4-ALL") {
+				return &AppPortProfile{ID: p.ID, Name: p.Name}, nil
+			}
+		}
+		// Không tìm thấy sẵn → tạo mới ICMP profile
+		created, err := c.createAppPortProfile("ICMPv4-ALL", "ICMPv4", "any", contextEntityID, orgRef)
+		if err != nil {
+			return nil, fmt.Errorf("failed to create ICMPv4-ALL app port profile: %w", err)
+		}
+		return created, nil
 	}
 
 	// Port "any" hoặc rỗng → không cần app profile (ngoại trừ ICMP đã xử lý ở trên)
