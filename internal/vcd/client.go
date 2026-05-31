@@ -18,8 +18,12 @@ const (
 	// VCD API version - dùng cho các API legacy (như auth, /api/admin/edgeGateway)
 	apiVersion = "37.2"
 
-	// CloudAPI version - dùng cho các endpoint /cloudapi/ (như firewall, NAT rules)
+	// CloudAPI version - dùng cho các endpoint /cloudapi/1.0.0/ (như NAT rules)
 	cloudApiVersion = "38.0"
+
+	// CloudAPI v2 version - dùng cho các endpoint /cloudapi/2.0.0/ (như firewall rules với rawPortProtocols)
+	// rawPortProtocols được thêm từ version 38.1 theo spec
+	cloudApiV2Version = "38.1"
 
 	// API headers
 	headerAccept        = "Accept"
@@ -161,8 +165,22 @@ func (c *Client) NewCloudAPIRequest(method, path string, body io.Reader) (*http.
 	return req, nil
 }
 
+// NewCloudAPIV2Request tạo HTTP request dùng org token cho /cloudapi/2.0.0/ endpoints
+// Cần dùng cho các API yêu cầu version 38.1+ như firewall rules với rawPortProtocols
+func (c *Client) NewCloudAPIV2Request(method, path string, body io.Reader) (*http.Request, error) {
+	url := fmt.Sprintf("%s%s", c.host, path)
 
-// Do thực thi HTTP request và trả về response
+	req, err := http.NewRequest(method, url, body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Set(headerAuthorization, "Bearer "+c.orgAccessToken)
+	req.Header.Set("Accept", fmt.Sprintf("application/json;version=%s", cloudApiV2Version))
+
+	return req, nil
+}
+
 func (c *Client) Do(req *http.Request) (*http.Response, error) {
 	req.Header.Set("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
 	return c.httpClient.Do(req)

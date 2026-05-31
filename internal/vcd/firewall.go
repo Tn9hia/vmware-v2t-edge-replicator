@@ -49,20 +49,36 @@ type NsxvFirewallService struct {
 	SourcePort string   `xml:"sourcePort"`
 }
 
-// NsxtFirewallRule đại diện cho firewall rule trên NSX-T (CloudAPI)
+// RawPortLayer4Item là định nghĩa port thô layer 4 trong NSX-T firewall rule
+type RawPortLayer4Item struct {
+	Protocol         string   `json:"protocol"`                   // TCP | UDP
+	DestinationPorts []string `json:"destinationPorts,omitempty"` // danh sách port, nil = any
+	SourcePorts      []string `json:"sourcePorts,omitempty"`
+}
+
+// RawPortProtocol bọc layer4Item trong cấu trúc rawPortProtocols của NSX-T
+type RawPortProtocol struct {
+	Layer4Item RawPortLayer4Item `json:"layer4Item"`
+}
+
+// NsxtFirewallRule đại diện cho firewall rule trên NSX-T (CloudAPI 2.0.0 - GatewayFirewallRule schema)
+// Lưu ý: API 2.0.0 dùng "active" thay vì "enabled" (khác với API 1.0.0 EdgeFirewallRule)
 type NsxtFirewallRule struct {
-	ID                             string            `json:"id,omitempty"`
-	Name                           string            `json:"name"`
-	Description                    string            `json:"description,omitempty"`
-	Enabled                        bool              `json:"enabled"`
-	ActionValue                    string            `json:"actionValue"` // ALLOW | DROP | REJECT
-	Direction                      string            `json:"direction,omitempty"` // IN_OUT | IN | OUT
-	Logging                        bool              `json:"logging"`
-	SourceFirewallGroups           []EntityReference `json:"sourceFirewallGroups,omitempty"`
-	DestinationFirewallGroups      []EntityReference `json:"destinationFirewallGroups,omitempty"`
-	SourceFirewallIpAddresses      []string          `json:"sourceFirewallIpAddresses,omitempty"`
-	DestinationFirewallIpAddresses []string          `json:"destinationFirewallIpAddresses,omitempty"`
-	ApplicationPortProfiles        []AppPortProfile  `json:"applicationPortProfiles,omitempty"`
+	ID                             string              `json:"id,omitempty"`
+	Name                           string              `json:"name"`
+	Description                    string              `json:"description,omitempty"`
+	Active                         bool                `json:"active"`
+	ActionValue                    string              `json:"actionValue"` // ALLOW | DROP | REJECT
+	Direction                      string              `json:"direction,omitempty"` // IN_OUT | IN | OUT
+	Logging                        bool                `json:"logging"`
+	SourceFirewallGroups           []EntityReference   `json:"sourceFirewallGroups,omitempty"`
+	DestinationFirewallGroups      []EntityReference   `json:"destinationFirewallGroups,omitempty"`
+	SourceFirewallIpAddresses      []string            `json:"sourceFirewallIpAddresses,omitempty"`
+	DestinationFirewallIpAddresses []string            `json:"destinationFirewallIpAddresses,omitempty"`
+	// ApplicationPortProfiles chỉ dùng cho ICMP (raw port không hỗ trợ ICMP)
+	ApplicationPortProfiles        []AppPortProfile    `json:"applicationPortProfiles,omitempty"`
+	// RawPortProtocols dùng cho TCP/UDP thay thế cho application port profiles
+	RawPortProtocols               []RawPortProtocol   `json:"rawPortProtocols,omitempty"`
 }
 
 type nsxtFirewallRulesResponse struct {
@@ -190,10 +206,11 @@ func (c *Client) GetNsxvFirewallRules(edgeID string) ([]NsxvFirewallRule, error)
 }
 
 // GetNsxtFirewallRules lấy danh sách user-defined firewall rules trên NSX-T edge
+// Sử dụng endpoint /cloudapi/2.0.0/ (hỗ trợ rawPortProtocols, thêm từ API 38.1)
 func (c *Client) GetNsxtFirewallRules(edgeURN string) ([]NsxtFirewallRule, error) {
-	path := fmt.Sprintf("/cloudapi/1.0.0/edgeGateways/%s/firewall/rules", edgeURN)
+	path := fmt.Sprintf("/cloudapi/2.0.0/edgeGateways/%s/firewall/rules", edgeURN)
 
-	req, err := c.NewCloudAPIRequest(http.MethodGet, path, nil)
+	req, err := c.NewCloudAPIV2Request(http.MethodGet, path, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -218,19 +235,21 @@ func (c *Client) GetNsxtFirewallRules(edgeURN string) ([]NsxtFirewallRule, error
 }
 
 // CreateNsxtFirewallRule tạo một firewall rule mới trên NSX-T edge
+// Sử dụng endpoint /cloudapi/2.0.0/ để hỗ trợ rawPortProtocols
+// API 2.0.0 trả về 202 Accepted + Location header cho task tracking
 func (c *Client) CreateNsxtFirewallRule(edgeURN string, rule NsxtFirewallRule) (*NsxtFirewallRule, error) {
-	path := fmt.Sprintf("/cloudapi/1.0.0/edgeGateways/%s/firewall/rules", edgeURN)
+	path := fmt.Sprintf("/cloudapi/2.0.0/edgeGateways/%s/firewall/rules", edgeURN)
 
 	bodyBytes, err := json.Marshal(rule)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := c.NewCloudAPIRequest(http.MethodPost, path, strings.NewReader(string(bodyBytes)))
+	req, err := c.NewCloudAPIV2Request(http.MethodPost, path, strings.NewReader(string(bodyBytes)))
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Set("Content-Type", fmt.Sprintf("application/json;version=%s", c.cloudApiVersion))
+	req.Header.Set("Content-Type", fmt.Sprintf("application/json;version=%s", cloudApiV2Version))
 
 	resp, err := c.Do(req)
 	if err != nil {
@@ -240,7 +259,21 @@ func (c *Client) CreateNsxtFirewallRule(edgeURN string, rule NsxtFirewallRule) (
 
 	body, _ := io.ReadAll(resp.Body)
 
-	if resp.StatusCode != http.StatusCreated && resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusAccepted {
+	// API 2.0.0 trả về 202 Accepted với Location header — chờ task hoàn thành
+	if resp.StatusCode == http.StatusAccepted {
+		location := resp.Header.Get("Location")
+		if location == "" {
+			// Không có Location header — coi như thành công
+			return &rule, nil
+		}
+		_, err := c.WaitForCloudApiTask(location, 120*time.Second, 3*time.Second)
+		if err != nil {
+			return nil, fmt.Errorf("firewall rule creation task failed: %w", err)
+		}
+		return &rule, nil
+	}
+
+	if resp.StatusCode != http.StatusCreated && resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("create firewall rule %q failed (HTTP %d): %s", rule.Name, resp.StatusCode, string(body))
 	}
 

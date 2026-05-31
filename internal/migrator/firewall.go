@@ -73,15 +73,16 @@ func (m *FirewallMigrator) Migrate(srcEdge, dstEdge *vcd.EdgeGateway) error {
 
 	dstURN := fmt.Sprintf("urn:vcloud:gateway:%s", dstEdge.ID)
 
-	// Bước 3: Load tất cả application port profiles
-	log.Printf("\nStep 3: Loading existing application port profiles...")
+	// Bước 3: Load các application port profiles (chỉ cần để xử lý ICMP)
+	// TCP/UDP sẽ sử dụng rawPortProtocols trực tiếp, không cần app profile.
+	log.Printf("\nStep 3: Loading ICMP application port profiles for ICMP rules...")
 	profiles, err := m.client.ListAppPortProfiles()
 	if err != nil {
 		return fmt.Errorf("failed to load app port profiles: %w", err)
 	}
 	log.Printf("  Loaded %d application port profiles", len(profiles))
 
-	// Lấy Owner URN context và OrgRef để tạo custom application profiles
+	// Lấy Owner URN context và OrgRef để tạo ICMP app profile nếu cần
 	contextURN, orgRef, err := m.client.GetEdgeOwnerAndOrgRef(dstURN)
 	if err != nil {
 		return fmt.Errorf("failed to get destination edge owner and orgRef: %w", err)
@@ -154,10 +155,10 @@ func (m *FirewallMigrator) Migrate(srcEdge, dstEdge *vcd.EdgeGateway) error {
 		}
 		existingFwGroups = updatedGroups
 
-		// Giải quyết profiles ứng dụng cho ports/protocols
-		appProfiles, err := m.ResolveFirewallAppProfiles(rule.Application, profiles, ruleName, contextURN, orgRef)
+		// Giải quyết ports/protocols: ICMP → app profile, TCP/UDP → raw port protocols
+		appProfiles, rawPortProtocols, err := m.resolveFirewallPorts(rule.Application, profiles, ruleName, contextURN, orgRef)
 		if err != nil {
-			return fmt.Errorf("failed to resolve app profiles for rule %q: %w", ruleName, err)
+			return fmt.Errorf("failed to resolve ports for rule %q: %w", ruleName, err)
 		}
 
 		// Xác định Action (ALLOW / DROP / REJECT)
@@ -169,7 +170,7 @@ func (m *FirewallMigrator) Migrate(srcEdge, dstEdge *vcd.EdgeGateway) error {
 		nsxtRule := vcd.NsxtFirewallRule{
 			Name:                           ruleName,
 			Description:                    rule.Description,
-			Enabled:                        rule.Enabled,
+			Active:                         rule.Enabled,
 			ActionValue:                    actionValue,
 			Logging:                        rule.LoggingEnabled,
 			SourceFirewallGroups:           srcResult.Groups,
@@ -177,14 +178,15 @@ func (m *FirewallMigrator) Migrate(srcEdge, dstEdge *vcd.EdgeGateway) error {
 			SourceFirewallIpAddresses:      srcResult.IPs,
 			DestinationFirewallIpAddresses: dstResult.IPs,
 			ApplicationPortProfiles:        appProfiles,
+			RawPortProtocols:               rawPortProtocols,
 		}
 
 		if m.dryRun {
-			log.Printf("  [DRY-RUN] Would create firewall rule %q: Action=%s, SrcGroups=%v, SrcIPs=%v, DstGroups=%v, DstIPs=%v, Apps=%v",
+			log.Printf("  [DRY-RUN] Would create firewall rule %q: Action=%s, SrcGroups=%v, SrcIPs=%v, DstGroups=%v, DstIPs=%v, ICMPProfiles=%v, RawPorts=%v",
 				nsxtRule.Name, nsxtRule.ActionValue,
 				nsxtRule.SourceFirewallGroups, nsxtRule.SourceFirewallIpAddresses,
 				nsxtRule.DestinationFirewallGroups, nsxtRule.DestinationFirewallIpAddresses,
-				nsxtRule.ApplicationPortProfiles)
+				nsxtRule.ApplicationPortProfiles, nsxtRule.RawPortProtocols)
 			created++
 			continue
 		}
@@ -433,15 +435,18 @@ func (m *FirewallMigrator) resolveKeyword(kw string, interfaces []vcd.NsxvGatewa
 	return resolved
 }
 
-// ResolveFirewallAppProfiles map dịch vụ NSX-V sang application port profiles của NSX-T
-func (m *FirewallMigrator) ResolveFirewallAppProfiles(
+// resolveFirewallPorts chuyển đổi dịch vụ NSX-V sang:
+//   - appProfiles: chỉ dùng cho ICMP (vì raw port không hỗ trợ ICMP)
+//   - rawPortProtocols: dùng cho TCP/UDP (thay thế application port profiles)
+func (m *FirewallMigrator) resolveFirewallPorts(
 	app vcd.NsxvFirewallApplication,
 	existingProfiles []vcd.AppPortProfileFull,
 	ruleName string,
 	contextURN string,
 	orgRef *vcd.EntityReference,
-) ([]vcd.AppPortProfile, error) {
-	var result []vcd.AppPortProfile
+) ([]vcd.AppPortProfile, []vcd.RawPortProtocol, error) {
+	var appProfiles []vcd.AppPortProfile
+	var rawPorts []vcd.RawPortProtocol
 
 	for _, service := range app.Services {
 		proto := strings.ToLower(strings.TrimSpace(service.Protocol))
@@ -449,54 +454,94 @@ func (m *FirewallMigrator) ResolveFirewallAppProfiles(
 			continue
 		}
 
-		// ICMP -> ICMPv4-ALL
+		// ICMP → vẫn dùng application port profile (raw port không hỗ trợ ICMP)
 		if proto == "icmp" {
 			profile, err := m.client.FindOrCreateAppPortProfile(existingProfiles, "icmp", "any", ruleName, contextURN, orgRef)
 			if err != nil {
-				return nil, err
+				return nil, nil, err
 			}
 			if profile != nil {
-				result = append(result, *profile)
+				appProfiles = append(appProfiles, *profile)
 			}
 			continue
 		}
 
-		// TCP / UDP: Xử lý port
+		// TCP / UDP → dùng raw port protocol
+		nsxtProto := strings.ToUpper(proto) // TCP | UDP
 		if len(service.Ports) == 0 {
-			profile, err := m.client.FindOrCreateAppPortProfile(existingProfiles, proto, "any", ruleName, contextURN, orgRef)
-			if err != nil {
-				return nil, err
-			}
-			if profile != nil {
-				result = append(result, *profile)
-			}
+			// Không có port cụ thể → thêm entry không giới hạn port (destinationPorts = nil)
+			rawPorts = append(rawPorts, vcd.RawPortProtocol{
+				Layer4Item: vcd.RawPortLayer4Item{
+					Protocol: nsxtProto,
+				},
+			})
 			continue
 		}
 
 		for _, port := range service.Ports {
-			portStr := strings.ToLower(strings.TrimSpace(port))
-			profile, err := m.client.FindOrCreateAppPortProfile(existingProfiles, proto, portStr, ruleName, contextURN, orgRef)
-			if err != nil {
-				return nil, err
-			}
-			if profile != nil {
-				result = append(result, *profile)
+			portStr := strings.TrimSpace(port)
+			if portStr == "" || strings.EqualFold(portStr, "any") {
+				// Port "any" → không giới hạn port
+				rawPorts = append(rawPorts, vcd.RawPortProtocol{
+					Layer4Item: vcd.RawPortLayer4Item{
+						Protocol: nsxtProto,
+					},
+				})
+			} else {
+				rawPorts = append(rawPorts, vcd.RawPortProtocol{
+					Layer4Item: vcd.RawPortLayer4Item{
+						Protocol:         nsxtProto,
+						DestinationPorts: []string{portStr},
+					},
+				})
 			}
 		}
 	}
 
-	// Loại bỏ profile trùng lặp
-	var unique []vcd.AppPortProfile
-	seen := map[string]bool{}
-	for _, p := range result {
-		if !seen[p.ID] {
-			seen[p.ID] = true
-			unique = append(unique, p)
+	// Loại bỏ ICMP profile trùng lặp
+	var uniqueProfiles []vcd.AppPortProfile
+	seenProfiles := map[string]bool{}
+	for _, p := range appProfiles {
+		if !seenProfiles[p.ID] {
+			seenProfiles[p.ID] = true
+			uniqueProfiles = append(uniqueProfiles, p)
 		}
 	}
 
-	return unique, nil
+	// Loại bỏ raw port trùng lặp (proto+ports giống nhau)
+	type rawPortKey struct {
+		proto string
+		ports string
+	}
+	var uniqueRawPorts []vcd.RawPortProtocol
+	seenRaw := map[rawPortKey]bool{}
+	for _, rp := range rawPorts {
+		k := rawPortKey{
+			proto: rp.Layer4Item.Protocol,
+			ports: strings.Join(rp.Layer4Item.DestinationPorts, ","),
+		}
+		if !seenRaw[k] {
+			seenRaw[k] = true
+			uniqueRawPorts = append(uniqueRawPorts, rp)
+		}
+	}
+
+	return uniqueProfiles, uniqueRawPorts, nil
 }
+
+// ResolveFirewallAppProfiles giữ lại để backward compat (không còn dùng trong Migrate).
+// Khuyến cáo dùng resolveFirewallPorts thay thế.
+func (m *FirewallMigrator) ResolveFirewallAppProfiles(
+	app vcd.NsxvFirewallApplication,
+	existingProfiles []vcd.AppPortProfileFull,
+	ruleName string,
+	contextURN string,
+	orgRef *vcd.EntityReference,
+) ([]vcd.AppPortProfile, error) {
+	profiles, _, err := m.resolveFirewallPorts(app, existingProfiles, ruleName, contextURN, orgRef)
+	return profiles, err
+}
+
 
 func uniqueStrings(slice []string) []string {
 	keys := make(map[string]bool)
