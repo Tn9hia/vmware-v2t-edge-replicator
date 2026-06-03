@@ -76,20 +76,21 @@ func (m *NATMigrator) Migrate(srcEdge, dstEdge *vcd.EdgeGateway) error {
 
 	for _, rule := range srcRules {
 		proto := strings.ToLower(strings.TrimSpace(rule.GatewayNat.Protocol))
-		port := determinePort(rule)
-		key := portKey{proto, port}
+		// App profile dùng internal port (TranslatedPort cho DNAT) — đây là port của service thực bên trong
+		appPort := determineAppPort(rule)
+		key := portKey{proto, appPort}
 
 		if _, exists := appProfileCache[key]; !exists {
 			ruleName := buildRuleName(rule)
-			profile, err := m.client.FindOrCreateAppPortProfile(profiles, proto, port, ruleName, contextURN, orgRef)
+			profile, err := m.client.FindOrCreateAppPortProfile(profiles, proto, appPort, ruleName, contextURN, orgRef)
 			if err != nil {
 				return fmt.Errorf("app port profile error for rule %q: %w", rule.ID, err)
 			}
 			appProfileCache[key] = profile
 			if profile != nil {
-				log.Printf("  ✓ [%s/%s] → %s (%s)", proto, port, profile.Name, profile.ID)
+				log.Printf("  ✓ [%s/%s] → %s (%s)", proto, appPort, profile.Name, profile.ID)
 			} else {
-				log.Printf("  ✓ [%s/%s] → no app profile needed (any protocol/port)", proto, port)
+				log.Printf("  ✓ [%s/%s] → no app profile needed (any protocol/port)", proto, appPort)
 			}
 		}
 	}
@@ -122,10 +123,10 @@ func (m *NATMigrator) Migrate(srcEdge, dstEdge *vcd.EdgeGateway) error {
 			continue
 		}
 
-		// Resolve app port profile
+		// Resolve app port profile dựa theo internal port (TranslatedPort cho DNAT)
 		proto := strings.ToLower(strings.TrimSpace(rule.GatewayNat.Protocol))
-		port := determinePort(rule)
-		key := portKey{proto, port}
+		appPort := determineAppPort(rule)
+		key := portKey{proto, appPort}
 		appProfile := appProfileCache[key]
 
 		// Build NSX-T NAT rule
@@ -173,12 +174,14 @@ func buildRuleName(rule vcd.NsxvNatRule) string {
 	return tag
 }
 
-// determinePort lấy port phù hợp từ NSX-V rule để map sang app profile.
-// - DNAT: dùng originalPort (port mà traffic đến)
-// - SNAT: không cần port match (thường any)
-func determinePort(rule vcd.NsxvNatRule) string {
+// determineAppPort lấy port dùng cho application port profile.
+// NSX-T dùng app profile để xác định service cần match:
+//   - DNAT: dùng TranslatedPort (internal port) — đây là port thực của service bên trong
+//     ExternalPort sẽ được set riêng trong DnatExternalPort
+//   - SNAT: không cần port match (thường any)
+func determineAppPort(rule vcd.NsxvNatRule) string {
 	if strings.EqualFold(rule.RuleType, "DNAT") {
-		port := strings.ToLower(strings.TrimSpace(rule.GatewayNat.OriginalPort))
+		port := strings.ToLower(strings.TrimSpace(rule.GatewayNat.TranslatedPort))
 		if port == "" {
 			return "any"
 		}

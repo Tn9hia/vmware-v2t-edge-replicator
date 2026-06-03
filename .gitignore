@@ -22,3 +22,4 @@ v2t-replicate-edge
 *.md
 !README.md
 !builds/
+.DS_Store
